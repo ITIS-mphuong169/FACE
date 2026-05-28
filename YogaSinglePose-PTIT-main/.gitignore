@@ -1,0 +1,7 @@
+# Bỏ qua file lớn
+*.pth
+*.mp4
+
+# Bỏ qua cache Python
+__pycache__/
+*.pyc

@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.env
+.env.*
+.csv
+!.env.example
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+
+# ML artifacts
+*.pth
+*.pt
+*.onnx
+*.h5
+*.pkl
+*.joblib
+*.npz
+*.npy
+
+# Media (large)
+*.mp4
+*.avi
+*.mov
+
+# Experiment outputs
+outputs/
+outputs_*/
+core_yoga_face/outputs/
+unused/
+
+# YogaSinglePose — large data & trained weights
+YogaSinglePose-PTIT-main/dataset/
+YogaSinglePose-PTIT-main/saved_models/
+YogaSinglePose-PTIT-main/feature_ske_csv/
+YogaSinglePose-PTIT-main/saved_logs/

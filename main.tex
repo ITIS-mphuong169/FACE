@@ -1,0 +1,325 @@
+%Version 3.1 December 2024
+% See section 11 of the User Manual for version history
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                 %%
+%% Please do not use \input{...} to include other tex files.       %%
+%% Submit your LaTeX manuscript as one .tex document.              %%
+%%                                                                 %%
+%% All additional figures and files should be attached             %%
+%% separately and not embedded in the \TeX\ document itself.       %%
+%%                                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%\documentclass[referee,sn-basic]{sn-jnl}% referee option is meant for double line spacing
+
+%%=======================================================%%
+%% to print line numbers in the margin use lineno option %%
+%%=======================================================%%
+
+%%\documentclass[lineno,pdflatex,sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+
+%%=========================================================================================%%
+%% the documentclass is set to pdflatex as default. You can delete it if not appropriate.  %%
+%%=========================================================================================%%
+
+%%\documentclass[sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+
+%%Note: the following reference styles support Namedate and Numbered referencing. By default the style follows the most common style. To switch between the options you can add or remove Numbered in the optional parenthesis. 
+%%The option is available for: sn-basic.bst, sn-chicago.bst%  
+ 
+%%\documentclass[pdflatex,sn-nature]{sn-jnl}% Style for submissions to Nature Portfolio journals
+%%\documentclass[pdflatex,sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}% Math and Physical Sciences Numbered Reference Style
+%%\documentclass[pdflatex,sn-mathphys-ay]{sn-jnl}% Math and Physical Sciences Author Year Reference Style
+%%\documentclass[pdflatex,sn-aps]{sn-jnl}% American Physical Society (APS) Reference Style
+%%\documentclass[pdflatex,sn-vancouver-num]{sn-jnl}% Vancouver Numbered Reference Style
+%%\documentclass[pdflatex,sn-vancouver-ay]{sn-jnl}% Vancouver Author Year Reference Style
+%%\documentclass[pdflatex,sn-apa]{sn-jnl}% APA Reference Style
+%%\documentclass[pdflatex,sn-chicago]{sn-jnl}% Chicago-based Humanities Reference Style
+
+%%%% Standard Packages
+%%<additional latex packages if required can be included here>
+
+\usepackage{graphicx}%
+\usepackage{multirow}%
+\usepackage{amsmath,amssymb,amsfonts}%
+\usepackage{amsthm}%
+\usepackage{mathrsfs}%
+\usepackage[title]{appendix}%
+\usepackage{xcolor}%
+\usepackage{textcomp}%
+\usepackage{manyfoot}%
+\usepackage{booktabs}%
+\usepackage{algorithm}%
+\usepackage{algorithmicx}%
+\usepackage{algpseudocode}%
+\usepackage{listings}%
+%%%%
+
+%%%%%=============================================================================%%%%
+%%%%  Remarks: This template is provided to aid authors with the preparation
+%%%%  of original research articles intended for submission to journals published 
+%%%%  by Springer Nature. The guidance has been prepared in partnership with 
+%%%%  production teams to conform to Springer Nature technical requirements. 
+%%%%  Editorial and presentation requirements differ among journal portfolios and 
+%%%%  research disciplines. You may find sections in this template are irrelevant 
+%%%%  to your work and are empowered to omit any such section if allowed by the 
+%%%%  journal you intend to submit to. The submission guidelines and policies 
+%%%%  of the journal take precedence. A detailed User Manual is available in the 
+%%%%  template package for technical guidance.
+%%%%%=============================================================================%%%%
+
+%% as per the requirement new theorem styles can be included as shown below
+\theoremstyle{thmstyleone}%
+\newtheorem{theorem}{Theorem}%  meant for continuous numbers
+%%\newtheorem{theorem}{Theorem}[section]% meant for sectionwise numbers
+%% optional argument [theorem] produces theorem numbering sequence instead of independent numbers for Proposition
+\newtheorem{proposition}[theorem]{Proposition}% 
+%%\newtheorem{proposition}{Proposition}% to get separate numbers for theorem and proposition etc.
+
+\theoremstyle{thmstyletwo}%
+\newtheorem{example}{Example}%
+\newtheorem{remark}{Remark}%
+
+\theoremstyle{thmstylethree}%
+\newtheorem{definition}{Definition}%
+
+\raggedbottom
+%%\unnumbered% uncomment this for unnumbered level heads
+
+\begin{document}
+
+\title[Article Title]{FACE-Yoga: A Feasible and Actionable Counterfactual Explanation Framework for Yoga Posture Correction}
+
+%%=============================================================%%
+%% GivenName	-> \fnm{Joergen W.}
+%% Particle	-> \spfx{van der} -> surname prefix
+%% FamilyName	-> \sur{Ploeg}
+%% Suffix	-> \sfx{IV}
+%% \author*[1,2]{\fnm{Joergen W.} \spfx{van der} \sur{Ploeg} 
+%%  \sfx{IV}}\email{iauthor@gmail.com}
+%%=============================================================%%
+\author[1]{\fnm{Thi Phuong} \sur{Mai}}\email{phuongmt@stu.ptit.edu.vn}
+
+\author[1]{\fnm{Duy Phuong} \sur{Nguyen}}\email{phuongnd@ptit.edu.vn} 
+
+\author*[1]{\fnm{Quang Huy} \sur{Nguyen}}\email{huynq@ptit.edu.vn}
+
+\affil[1]{\orgname{Posts and Telecommunications Institute of Technology}, \orgaddress{\city{Hanoi}, \country{Vietnam}}}
+
+
+% \affil[2]{\orgdiv{Department}, \orgname{Organization}, \orgaddress{\street{Street}, \city{City}, \postcode{10587}, \state{State}, \country{Country}}}
+
+% \affil[3]{\orgdiv{Department}, \orgname{Organization}, \orgaddress{\street{Street}, \city{City}, \postcode{610101}, \state{State}, \country{Country}}}
+
+%%==================================%%
+%% Sample for unstructured abstract %%
+%%==================================%%
+
+\abstract{
+\textbf{Context:} Yoga is becoming increasingly popular, and various technologies have been developed for yoga posture classification. However, alongside this growth, the critical importance of proper and safe yoga practice must be more deeply explored to prevent injuries.
+
+\textbf{Problem:} Current AI models primarily focus on binary classification (correct/incorrect), with few studies demonstrating how to provide safe and feasible posture corrections for practitioners. Most existing suggestions rely on basic joint angles and lack the flexibility required for multi-label classification problems. Furthermore, generating recommendations raises a question of trust, as users are forced to decide whether or not to trust the system's explanations.
+
+\textbf{Proposed Solution:} This study introduces FACE-Yoga, an autonomous framework that utilizes the MoveNet model for feature extraction and the FACE (Feasible and Actionable Counterfactual Explanations) algorithm to generate reliable and safe posture correction paths.
+
+\textbf{Key Contributions:} We propose a comprehensive framework that combines deep learning on skeletal data with posture correction suggestions, including:
+\begin{itemize}
+    \item Applying Counterfactual Reasoning to skeletal data.
+    \item Ensuring Physiological Safety through Kernel Density Estimation (KDE).
+    \item Providing actionable feedback based on the positional differences ($\Delta$) between keypoints.
+\end{itemize}
+}
+
+%%================================%%
+%% Sample for structured abstract %%
+%%================================%%
+
+% \abstract{\textbf{Purpose:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Methods:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Results:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Conclusion:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.}
+
+\keywords{Yoga Posture Correction, Counterfactual Explanations, FACE Algorithm, Human Pose Estimation, MoveNet, Kernel Density Estimation}
+
+%%\pacs[JEL Classification]{D8, H51}
+
+%%\pacs[MSC Classification]{35A01, 65L10, 65L12, 65L20, 65L70}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+\subsection{Motivation: Yoga as a Safety-Critical Healthcare Application}
+\textbf{The Clinical Perspective:} Yoga is not merely a physical exercise but a form of physical therapy. Misalignment of joints, even by a few degrees, can lead to severe spinal or ligament injuries. 
+
+\textbf{The Autonomous Necessity:} In the context of telehealth, practitioners lack direct supervision from professional instructors. An Autonomous System acts as a "digital supervisor" capable of providing timely, protective interventions to ensure user safety.
+
+\subsection{Challenges: The Opacity and Risk of Black-box AI}
+\textbf{Explainability Deficit:} Most modern Deep Learning models are limited to reporting "Correct/Incorrect" errors. This creates a deadlock for the user: "I know my posture is wrong, but I do not know how to correct it safely."
+
+\textbf{The Danger of Mathematical Optimization:} Conventional optimization methods (gradient-based) carry the risk of suggesting anatomically impossible or "bone-breaking" postures. They merely seek the shortest mathematical path, completely ignoring the physical limitations of the human body.
+
+\subsection{Objective: The Pillars of Feasible and Actionable Guidance}
+\textbf{Anatomical Feasibility:} Establishing a framework that ensures all corrective suggestions are grounded in a real-world data manifold.
+
+\textbf{Actionability with Minimal Effort:} The system aims to provide immediate, actionable instructions, enabling the user to achieve the correct posture with minimal changes in the center of gravity and muscular effort.
+
+\section{Related Work}\label{sec:related}
+
+\subsection{Vision-based Yoga Monitoring: Detection vs. Intervention}
+\textbf{HPE Models (MoveNet, BlazePose):} Among Human Pose Estimation (HPE) models, MoveNet (particularly the Thunder version) demonstrates superior keypoint accuracy and real-time processing speed compared to bulkier architectures. 
+
+\textbf{The Gap:} The majority of current studies combining HPE with ML/DL treat classification as the ultimate goal. However, practically, this is only the initial diagnostic step. In this study, we shift the focus from Detection to Actuation and Intervention.
+
+\subsection{XAI in Healthcare: From Visual Heatmaps to Counterfactuals}
+\textbf{Static vs. Dynamic Explanations:} Heatmaps have a major limitation in that they only show the location of the error (static), whereas Counterfactuals demonstrate the method of correction (dynamic). 
+
+\textbf{User-Centric Design:} Counterfactual reasoning is the most natural form of explanation for human cognition: "If you do X instead of Y, the result will be Z."
+
+\subsection{The FACE Algorithm: Bridging Data Density and Physical Reality}
+\textbf{Core Logic of FACE:} The FACE algorithm (Poyiadzi et al.) excels in modeling the human posture space by relying on a connected graph rather than unconstrained spaces. 
+
+\textbf{Safety Barrier:} The Kernel Density Estimation (KDE) mechanism acts as a protective barrier. If a correction path leads into a low-density region (an area with no real human data), FACE automatically rejects it to guarantee safety. 
+
+\textbf{Data Distribution and Robustness:} Classifying yoga classes is only the foundation; the FACE algorithm is the engine that transforms static data into feasible correction paths. The distribution of posture labels in the dataset establishes the foundation for the FACE graph. If the system cannot find a safe path, it will refuse to provide guidance rather than offer a dangerous suggestion (illustrated in Figure \ref{fig:face_concept}).
+
+\begin{figure}[h]
+\centering
+% \includegraphics[width=0.8\textwidth]{distribution_chart.eps}
+\caption{Distribution chart of Yoga posture labels in the dataset. The chart illustrates the allocation and real-world applicability of the classes, establishing the foundation for the FACE graph.}\label{fig:distribution}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+% \includegraphics[width=0.8\textwidth]{face_concept.eps}
+\caption{Conceptual Illustration: The difference between "Blind mathematical optimization" (a straight line crossing hazardous regions) and the "FACE path" (a safe curve navigating along the real-world data manifold).}\label{fig:face_concept}
+\end{figure}
+
+\section{Proposed Methodology (FACE-Yoga Framework)}\label{sec:methodology}
+
+The FACE-Yoga system is designed as an autonomous, closed-loop pipeline comprising four main stages: Skeletal Feature Extraction, Posture Classification, Counterfactual Reasoning, and Actionable Feedback Generation. The overall pipeline is illustrated in Figure \ref{fig:pipeline}.
+
+\begin{figure}[h]
+\centering
+% \includegraphics[width=0.9\textwidth]{pipeline.eps}
+\caption{The Pipeline of the FACE-Yoga system. It includes the Input block, MoveNet extraction block (51D Vector), Classifier block, FACE Graph Logic block, and the Actionable Feedback Output block.}\label{fig:pipeline}
+\end{figure}
+
+\subsection{Stage 1: Skeletal Sensing}
+In this stage, the system receives raw images from the camera and converts them into structured digital data:
+\begin{itemize}
+    \item \textbf{Tool:} The MoveNet model (Thunder version) is utilized to ensure real-time performance.
+    \item \textbf{Output Data:} Extraction of 17 keypoints. Each point includes $(x, y)$ coordinates and a confidence score $(c)$.
+    \item \textbf{Data Structure:} All information is vectorized into a $51$-dimensional array ($17 \times 3$). This data is then stored in a centralized CSV file, enabling the system to quickly retrieve and synchronize skeletal coordinates with the original image paths (\textit{image\_path}).
+\end{itemize}
+
+\subsection{Stage 2: Intelligent Classification Engine}
+The system uses a classification model to evaluate the correctness of the posture:
+\begin{itemize}
+    \item \textbf{Architecture:} The classifier is trained on the extracted CSV dataset.
+    \item \textbf{Evaluation Mechanism:} The model outputs a probability list (Softmax) for the posture classes.
+    \item \textbf{Thresholding:}
+    \begin{itemize}
+        \item If probability $P \geq 0.90$: The posture is accepted as "Correct".
+        \item If probability $P < 0.90$: The FACE algorithm procedure is triggered.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Stage 3: FACE-based Reasoning Engine}
+This serves as the "brain" of the system, determining the optimal correction path:
+\begin{itemize}
+    \item \textbf{Building the Safety Manifold:} The system constructs a $Graph$ where the $Nodes$ represent exemplary "Correct" postures from the training set.
+    \item \textbf{Feasible Edges:} Edges are only established if two postures share a high degree of anatomical similarity.
+    \item \textbf{Solution Search:} Upon encountering an incorrect posture ($x_{wrongblank}$), the algorithm searches the graph to identify the nearest "Correct" node ($x_{cf}$).
+    \item \textbf{Feasibility Guarantee:} Because $x_{cf}$ is an actual posture from the dataset, the system guarantees that the suggested posture can be physically performed by a human body, preventing injuries.
+\end{itemize}
+
+\subsection{Stage 4: Actionable Output and Image Retrieval}
+\begin{itemize}
+    \item \textbf{Delta Calculation ($\Delta$):} The system compares the positional deviation between the current incorrect posture and the target correct posture generated by FACE.
+    \item \textbf{Image Retrieval:} Using the \textit{image\_path} column in the CSV, the system backtracks to display an illustrative image of the target posture.
+    \item \textbf{Actionability:} The most significant deviations (e.g., knee, hip) are prioritized and translated into natural language instructions (e.g., "Push your knee to the left", "Lower your center of gravity").
+\end{itemize}
+
+\textbf{Advantages of the Pipeline for High-Tier (Q1) Standards:} High practicality due to MoveNet's real-time speed; Transparency (XAI) achieved by explaining errors with real-world examples; High safety as the FACE graph constrains suggestions to physiologically feasible data rather than generating synthetic, potentially harmful images.
+
+\section{Experimental Setup}\label{sec:experimental}
+
+\subsection{Dataset Description}
+We evaluate the proposed framework using two core experimental configurations:
+\begin{enumerate}
+    \item \textbf{YogaSinglePose-PTIT Dataset:} A comprehensive dataset consisting of $13,928$ total samples distributed across $12$ different yoga posture classes: \textit{bridge}, \textit{child}, \textit{downwardFacingDog}, \textit{lowPlank}, \textit{mountain1}, \textit{mountain2}, \textit{plank}, \textit{seatedForwardBend}, \textit{tree}, \textit{triangle}, \textit{warrior1}, and \textit{warrior2}. The dataset is split into $11,142$ training samples and $2,786$ testing samples ($80/20\%$ split).
+    \item \textbf{Yoga Multiclass Coordinate Dataset:} A curated dataset containing $1,080$ samples across $5$ common classes: \textit{plank} ($266$ samples), \textit{warrior2} ($252$ samples), \textit{downdog} ($222$ samples), \textit{goddess} ($180$ samples), and \textit{tree} ($160$ samples). A stratified $80/20\%$ split is used for model verification, yielding $864$ training samples and $216$ testing samples.
+\end{enumerate}
+For both configurations, raw coordinates are centered by translating the mid-hip joint to the origin $(0,0)$ and normalized using the torso length (Euclidean distance between mid-hip and mid-shoulder) to guarantee scale invariance.
+
+\subsection{Implementation Details}
+MoveNet (Thunder version) is deployed to digitize all input images into $51$-dimensional skeletal vectors ($17$ joints $\times$ $3$ elements: $x, y, \text{confidence}$). We implement and verify two distinct classifier architectures:
+\begin{enumerate}
+    \item \textbf{Multi-Layer Perceptron (MLP):} A fully connected neural network trained on the $12$-class normalized dataset, using cross-entropy loss, Adam optimizer, and hidden layers configured as $[128, 64]$.
+    \item \textbf{ExtraTrees Classifier:} An ensemble model trained on the $5$-class raw skeletal dataset with $600$ trees and balanced class weights to address minor data imbalances.
+\end{enumerate}
+For the FACE algorithm setup under the MLP configuration, we set the graph parameters to $k_{\text{graph}} = 7$ for neighbor graph construction, $k_{\text{density}} = 5$ for localized density estimation, and a target confidence threshold $P_{\text{threshold}} = 0.90$. Under the ExtraTrees configuration, we define $k_{\text{neighbors}} = 20$, density penalty weight $\lambda = 0.35$, and KDE bandwidth $h = 0.25$.
+
+\subsection{Evaluation Metrics}
+The evaluation metrics include Accuracy, Balanced Accuracy, Macro F1-score, and the \textbf{Success Rate of CF generation} (the ratio of incorrect postures for which the graph-based FACE search successfully resolves a path to a standardized correct target with $P \geq 0.90$).
+
+\section{Results and Discussion}\label{sec:results}
+
+\subsection{Performance Analysis}
+The classification backbones achieve high diagnostic accuracy on the test set prior to executing the counterfactual reasoning phase:
+\begin{itemize}
+    \item The $12$-class MLP model achieves an exceptional classification accuracy of \textbf{98.67\%} on the test set of $2,786$ samples.
+    \item The $5$-class ExtraTrees model yields a classification accuracy of \textbf{86.11\%}, a balanced accuracy of \textbf{86.00\%}, and a macro F1-score of \textbf{85.47\%}.
+\end{itemize}
+Under the strict confidence threshold of $P_{\text{threshold}} \ge 0.90$, the ExtraTrees setup achieves a counterfactual path generation success rate of \textbf{29.63\%}. These results verify that our backbone classification engines possess sufficient diagnostic capability before passing incorrect posture queries to the FACE engine.
+
+\subsection{Case Studies}
+To visually and quantitatively demonstrate the effectiveness of the FACE-Yoga engine, we detail two representative classes of correction:
+\begin{enumerate}
+    \item \textbf{Case 1: Same-Label Posture Correction.} The system analyzes a misaligned \textit{downdog} pose (\texttt{downdog/00000367.png}) initially classified with low confidence ($P_{\text{downdog}} = 0.2917$). The FACE algorithm successfully traces a safety path of $1$ step and graph cost $0.1385$ to a standard correct same-class sample (\texttt{downdog/00000300.jpg}) achieving $P_{\text{downdog}} = 1.0000$. Similarly, for a highly misaligned \textit{plank} posture (\texttt{plank/00000272.jpg}, $P_{\text{plank}} = 0.1250$), the engine computes a path of length $2$ steps and cost $2.8629$ routing through an intermediate node (\texttt{downdog/00000304.jpg}) to a standard correct plank posture (\texttt{plank/00000204.png}, $P_{\text{plank}} = 1.0000$).
+    \item \textbf{Case 2: Cross-Label Action Correction.} In this case, a user performing an incorrect \textit{downdog} posture (\texttt{downdog/00000367.png}, $P_{\text{warrior2}} = 0.0583$) is guided to transition to a standard \textit{warrior2} pose. FACE successfully determines a feasible transition path of $1$ step and graph cost $0.4605$ to a target correct posture (\texttt{warrior2/00000182.jpg}) with $P_{\text{warrior2}} = 1.0000$. For a more distant transition from \textit{plank} (\texttt{plank/00000272.jpg}, $P_{\text{warrior2}} = 0.0317$) to \textit{warrior2}, FACE finds a smooth $3$-step path (\texttt{plank/00000272.jpg} $\rightarrow$ \texttt{downdog/00000304.jpg} $\rightarrow$ \texttt{downdog/00000170.jpg} $\rightarrow$ \texttt{warrior2/00000438.jpg}) with a total graph cost of $3.2403$ to a standardized target with $P_{\text{warrior2}} = 1.0000$.
+\end{enumerate}
+
+\subsection{Actionability and Feasibility Validation}
+To validate the safety advantage of our framework, we compare FACE with a standard unconstrained Nearest Neighbor (NN) search. Standard NN search simply finds the closest correct pose in terms of raw Euclidean distance without graph connectivity or density constraints, frequently yielding direct vectors that cross low-density regions (i.e., suggesting physiologically impossible intermediate states). 
+
+Conversely, FACE constrains suggestions to trace paths along the high-density manifold of real human poses. As shown in the PCA raw feature projections (Figure \ref{fig:distribution}), the density-aware cost function penalizes and completely avoids empty regions, ensuring that all suggested movements and intermediate transitions are biologically feasible and physically safe.
+
+\section{Conclusion and Future Work}\label{sec:conclusion}
+
+\textbf{Conclusion:} The FACE-Yoga framework has proven successful in generating posture correction instructions that are both highly biologically safe (Feasible) and easily applicable in practice (Actionable) for users. 
+
+\textbf{Future Work:} Future research directions will focus on integrating the system into real-time mobile applications and expanding the algorithm to address more complex post-injury physical rehabilitation exercises.
+
+\section*{Declarations}
+\begin{itemize}
+    \item \textbf{Funding:} Not applicable.
+    \item \textbf{Conflict of interest:} The authors declare that they have no competing interests.
+    \item \textbf{Ethics approval and consent to participate:} Not applicable.
+    \item \textbf{Consent for publication:} All authors explicitly consent to the publication of this manuscript.
+    \item \textbf{Data/Code availability:} Datasets and source code are available from the corresponding author on reasonable request.
+\end{itemize}
+
+\begin{appendices}
+\section{System Implementation Details}\label{sec:appendix}
+The following functional modules were implemented for the experiments:
+\begin{itemize}
+    \item \textbf{Data Processing:} The \texttt{prepare\_data.py} script centers and scales the raw skeleton coordinates extracted from MoveNet, yielding a normalized $51$-dimensional skeletal representation (51D skeleton).
+    \item \textbf{Training:} The \texttt{train\_classifier.py} script trains the classification backbones (both MLP and ExtraTrees models), integrating optimization techniques and saving trained artifacts and scalers.
+    \item \textbf{Inference and Reasoning:} The \texttt{run\_core\_yoga\_demo.py} (and \texttt{run\_yoga_label_target_tests.py}) script constructs the safety graph, executes Dijkstra search with KDE density penalization, and outputs the optimal transition paths.
+    \item \textbf{Visualization:} The \texttt{plot\_pca\_face.py} and \texttt{render\_counterfactual\_image\_pairs.py} scripts project the high-dimensional paths onto 2D PCA spaces and render visual posture comparison pairs for actionable user feedback.
+\end{itemize}
+\end{appendices}
+%%===========================================================================================%%
+
+\bibliography{sn-bibliography}% common bib file
+%% if required, the content of .bbl file can be included here once bbl is generated
+%%\input sn-article.bbl
+
+\end{document}

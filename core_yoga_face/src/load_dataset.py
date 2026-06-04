@@ -87,6 +87,32 @@ def _build_kp_columns(df: pd.DataFrame) -> List[str]:
 
 
 
+def default_repo_root() -> Path:
+    """Repository root (FACE/), parent of core_yoga_face/."""
+    return Path(__file__).resolve().parents[2]
+
+
+def resolve_image_path(image_path: str, repo_root: Optional[Path] = None) -> Path:
+    """
+    Resolve image_path for display (supports relative paths from repo root).
+    """
+    repo_root = repo_root or default_repo_root()
+    raw = Path(image_path)
+    if raw.is_file():
+        return raw.resolve()
+
+    candidates = [
+        raw,
+        repo_root / raw,
+        Path.cwd() / raw,
+        repo_root / "core_yoga_face" / raw,
+    ]
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate.resolve()
+    return (repo_root / raw).resolve()
+
+
 def load_csv(csv_path: str | Path) -> pd.DataFrame:
     """Read a CSV file and return a DataFrame."""
     csv_path = Path(csv_path)

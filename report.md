@@ -2,7 +2,7 @@
 
 **Repository:** [https://github.com/ITIS-mphuong169/FACE](https://github.com/ITIS-mphuong169/FACE)
 
-**Phiên bản tài liệu:** 2026-05-28
+**Phiên bản tài liệu:** 2026-06-04
 
 ---
 
@@ -20,6 +20,8 @@
 10. [Kết quả đầu ra](#10-kết-quả-đầu-ra)
 11. [Lưu ý Git và dữ liệu lớn](#11-lưu-ý-git-và-dữ-liệu-lớn)
 12. [Xử lý sự cố](#12-xử-lý-sự-cố)
+13. [Dataset `movenet_with_paths.csv` và chuẩn hóa CSV](#13-dataset-movenet_with_pathscsv-và-chuẩn-hóa-csv)
+14. [Phụ lục — Tạo lại toàn bộ CSV từ đầu](#14-phụ-lục--tạo-lại-toàn-bộ-csv-từ-đầu)
 
 ---
 
@@ -199,12 +201,20 @@ Thí nghiệm root (`run_yoga_label_target_tests.py`) map thêm:
 
 ### 7.1 CSV skeleton (`core_yoga_face`)
 
-| Cột | Mô tả |
-|-----|--------|
-| `image_path` | Đường dẫn ảnh gốc |
-| `label` | Nhãn lớp |
-| `kp0_x`, `kp0_y`, `kp0_c` … `kp16_*` | 17 keypoint MoveNet (51 cột) |
+Hỗ trợ **hai cách đặt tên** 51 cột keypoint (code tự nhận diện khi load):
+
+| Quy ước | Ví dụ cột | Ghi chú |
+|---------|-----------|---------|
+| Chỉ số `kp` | `kp0_x`, `kp0_y`, `kp0_c` … `kp16_*` | `kp0` = mũi, `kp9` = cổ tay trái, … |
+| Tên MoveNet/COCO | `nose_x`, `left_wrist_x`, `left_wrist_score`, … | **Khuyến nghị** — dễ đọc, portable |
+
+| Cột khác | Mô tả |
+|----------|--------|
+| `image_path` | Đường dẫn ảnh — **nên dùng tương đối** từ thư mục gốc repo FACE (xem [§13](#13-dataset-movenet_with_pathscsv-và-chuẩn-hóa-csv)) |
+| `label` | Nhãn lớp (tên thư mục pose, vd. `bridge`, `warrior2`) |
 | `pose_name`, `correctness`, `split` | (tuỳ chọn) |
+
+**Ánh xạ nhanh (kp → tên):** kp0 mũi, kp5–6 vai, kp7–8 khuỷu, kp9–10 cổ tay, kp11–12 hông, kp13–14 gối, kp15–16 mắt cá.
 
 ### 7.2 CSV multiclass root (`poses_yoga_multiclass.csv`)
 
@@ -213,6 +223,24 @@ Thí nghiệm root (`run_yoga_label_target_tests.py`) map thêm:
 | `image_path` | Đường dẫn ảnh (tương đối dataset) |
 | `f0` … `f50` | 51 feature đã trích sẵn |
 | `label_name`, `label_id` | Tên và id lớp (vd. `downdog`, `warrior2`) |
+
+### 7.3 File mẫu `core_yoga_face/data/movenet_with_paths.csv`
+
+Bảng skeleton **đầy đủ** (~13 928 dòng) cho YogaSinglePose:
+
+- Cột keypoint: `nose_x`, `left_wrist_x`, … (51 cột + `_score` thay `_c`)
+- `image_path`: `YogaSinglePose-PTIT-main/dataset/<label>/<file>.jpg` (tương đối repo, không dùng `/Users/...`)
+- `label`, `correctness`
+
+Tách train/test:
+
+```bash
+cd core_yoga_face
+python src/prepare_data.py \
+  --input_csv data/movenet_with_paths.csv \
+  --output_dir data/ \
+  --label_col label
+```
 
 ---
 
@@ -260,7 +288,14 @@ python src/prepare_data.py \
   --n_classes 5 \
   --output_dir data/
 
-# Hoặc tách từ CSV raw
+# Hoặc tách từ CSV skeleton đã có (khuyến nghị)
+python src/prepare_data.py \
+  --input_csv data/movenet_with_paths.csv \
+  --output_dir data/ \
+  --test_size 0.2 \
+  --label_col label
+
+# Hoặc tách từ CSV raw khác
 python src/prepare_data.py \
   --input_csv data/raw_skeleton.csv \
   --output_dir data/ \
@@ -494,21 +529,104 @@ Sau khi clone repo, cần **tự chuẩn bị** dataset ảnh và model train s�
 | `Missing required columns: 51 keypoint columns` | Kiểm tra tên cột `kp{i}_x/y/c` hoặc `nose_x`, `left_eye_x`, … |
 | `No candidates with label=X and prob>=0.90` | Giảm `--threshold` (0.8, 0.7) hoặc mở rộng pool train |
 | FACE path quá dài / không hợp lý | Tăng `--k_graph` (10–15) hoặc `--face-k-neighbors` |
-| Render ảnh lỗi “file not found” | Kiểm tra `--dataset-root` trỏ đúng thư mục chứa ảnh |
+| Render ảnh lỗi “file not found” | Clone đủ `YogaSinglePose-PTIT-main/dataset/`; `image_path` phải là đường dẫn tương đối như trong CSV; chạy lệnh từ thư mục gốc FACE |
 | Không có `outputs/model/` | Chạy `train_classifier.py` trước `run_core_yoga_demo.py` |
 | KDE / graph lỗi | Pipeline tự fallback nearest L2; xem `method` trong JSON |
 
 ---
 
+## 13. Dataset `movenet_with_paths.csv` và chuẩn hóa CSV
+
+### 13.1 Chuẩn mới (2026-06)
+
+| Trước | Sau |
+|-------|-----|
+| `kp9_x`, `kp9_y`, `kp9_c` | `left_wrist_x`, `left_wrist_y`, `left_wrist_score` |
+| `/Users/.../FACE/YogaSinglePose-PTIT-main/dataset/...` | `YogaSinglePose-PTIT-main/dataset/...` |
+
+`load_dataset.resolve_image_path()` tự tìm ảnh từ thư mục gốc repo khi train/demo/visualize.
+
+### 13.2 Script chuẩn hóa CSV khác
+
+```bash
+cd core_yoga_face
+python src/normalize_skeleton_csv.py \
+  --input data/raw_skeleton.csv \
+  --output data/raw_skeleton.csv \
+  --inplace
+```
+
+Tham số `--repo-root` (tuỳ chọn): chỉ định thư mục gốc FACE nếu không nằm cạnh `core_yoga_face/`.
+
+### 13.3 Sau khi clone repo (máy mới)
+
+1. `git clone https://github.com/ITIS-mphuong169/FACE.git && cd FACE`
+2. Có file `core_yoga_face/data/movenet_with_paths.csv` trên Git
+3. Tải/copy ảnh vào `YogaSinglePose-PTIT-main/dataset/<label>/` **đúng cấu trúc** như trong cột `image_path`
+4. `cd core_yoga_face && pip install -r requirements.txt`
+5. `python src/prepare_data.py --input_csv data/movenet_with_paths.csv --output_dir data/`
+
+---
+
+## 14. Phụ lục — Tạo lại toàn bộ CSV từ đầu
+
+Nếu đã xóa `train.csv`, `test.csv`, `movenet_with_paths.csv`:
+
+### A — Thử nhanh (không cần ảnh)
+
+```bash
+cd core_yoga_face
+python src/prepare_data.py --generate_sample --n_samples 500 --n_classes 5 --output_dir data/
+```
+
+### B — Từ ảnh thật (YogaSinglePose)
+
+**0. Cấu trúc ảnh**
+
+```
+YogaSinglePose-PTIT-main/dataset/
+├── bridge/
+│   └── *.jpg
+├── tree/
+└── ...
+```
+
+**1. Trích skeleton**
+
+```bash
+cd YogaSinglePose-PTIT-main
+pip install opencv-python pandas numpy tensorflow tensorflow-hub
+python pose_estimation/blazepose_movenet_run_output_csv.py \
+  --dataset_dir dataset \
+  --output_dir feature_ske_csv \
+  --model_name movenet_tflite
+```
+
+**2. Gắn `image_path` + đổi `pose_class` → `label`**
+
+Chạy script Python (cùng thứ tự ảnh với bước 1) hoặc dùng `normalize_skeleton_csv.py` sau khi merge thủ công thành CSV có cột `kp*`.
+
+**3. Chuẩn hóa tên cột + đường dẫn**
+
+```bash
+cd core_yoga_face
+python src/normalize_skeleton_csv.py --input data/raw_skeleton.csv --inplace
+```
+
+**4–6.** `prepare_data.py` → `train_classifier.py` → `run_core_yoga_demo.py` (xem [§9.1](#91-pipeline-a--core_yoga_face-khuyến-nghị)).
+
+---
+
 ## Phụ lục — Luồng một lần chạy (checklist)
 
-**Muốn demo FACE nhanh nhất:**
+**Muốn demo FACE nhanh nhất (có dataset skeleton trên Git):**
 
 1. `cd core_yoga_face && pip install -r requirements.txt`
-2. Đảm bảo có `data/train.csv` và `data/test.csv`
-3. `python src/train_classifier.py --train_csv data/train.csv --test_csv data/test.csv --model_type mlp --output_dir outputs/model`
-4. `python src/run_core_yoga_demo.py --train_csv data/train.csv --test_csv data/test.csv --model_dir outputs/model --case 1 --output_dir outputs/case1`
-5. Mở `outputs/case1/result.json` và `pca_case1.png`
+2. `python src/prepare_data.py --input_csv data/movenet_with_paths.csv --output_dir data/` (hoặc đã có `train.csv` / `test.csv`)
+3. Có thư mục ảnh `../YogaSinglePose-PTIT-main/dataset/` nếu cần xem ảnh gợi ý
+4. `python src/train_classifier.py --train_csv data/train.csv --test_csv data/test.csv --model_type mlp --output_dir outputs/model`
+5. `python src/run_core_yoga_demo.py --train_csv data/train.csv --test_csv data/test.csv --model_dir outputs/model --case 1 --output_dir outputs/case1`
+6. Mở `outputs/case1/result.json` và `pca_case1.png`
 
 **Muốn chạy thí nghiệm multiclass trên CSV có sẵn ở root:**
 

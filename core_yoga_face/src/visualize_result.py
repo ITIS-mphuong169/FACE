@@ -37,7 +37,11 @@ def _load_image(path: Optional[str]) -> Optional[np.ndarray]:
     """Load image tu path, return RGB ndarray."""
     if path is None:
         return None
-    p = Path(path)
+    try:
+        from load_dataset import resolve_image_path
+        p = resolve_image_path(path)
+    except Exception:
+        p = Path(path)
     if not p.exists():
         logger.warning(f"Image not found: {p}")
         return None

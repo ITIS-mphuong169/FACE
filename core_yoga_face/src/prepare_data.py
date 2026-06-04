@@ -12,9 +12,9 @@ Usage:
       --label_col label
 
 Expects a CSV with:
-  - image_path column
+  - image_path column (relative to FACE repo root recommended)
   - label column
-  - 51 keypoint columns: kp0_x, kp0_y, kp0_c, ... kp16_x, kp16_y, kp16_c
+  - 51 keypoint columns: kp{i}_* OR nose_x/y/score, left_wrist_x, … (MoveNet names)
   - Optional: split, pose_name, correctness
 """
 
@@ -27,24 +27,27 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
+sys.path.insert(0, str(Path(__file__).parent))
+from load_dataset import KEYPOINT_NAMES, KP_COLS, _KP_NAME_COLS
+
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-KP_COLS = []
-for i in range(17):
-    KP_COLS += [f"kp{i}_x", f"kp{i}_y", f"kp{i}_c"]
-
 
 def check_required_columns(df: pd.DataFrame, label_col: str):
-    """Verify required columns exist."""
+    """Verify required columns exist (kp{i}_* or nose_x, left_wrist_x, …)."""
     missing = []
     if "image_path" not in df.columns:
         missing.append("image_path")
     if label_col not in df.columns:
         missing.append(label_col)
-    missing_kp = [c for c in KP_COLS if c not in df.columns]
-    if missing_kp:
-        missing.append(f"{len(missing_kp)} keypoint columns (e.g. {missing_kp[:3]})")
+    has_kp = all(c in df.columns for c in KP_COLS)
+    has_named = all(c in df.columns for c in _KP_NAME_COLS)
+    if not has_kp and not has_named:
+        missing.append(
+            "51 keypoint columns (kp{i}_x/y/c or "
+            + ", ".join(f"{KEYPOINT_NAMES[0]}_x, {KEYPOINT_NAMES[9]}_x, …)")
+        )
     if missing:
         raise ValueError(f"Missing required columns: {missing}")
 

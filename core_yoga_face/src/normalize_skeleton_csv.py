@@ -19,12 +19,10 @@ from pathlib import Path
 
 import pandas as pd
 
-from load_dataset import KEYPOINT_NAMES
+from load_dataset import KEYPOINT_NAMES, canonical_dataset_image_path
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
-
-DATASET_ANCHOR = "YogaSinglePose-PTIT-main/dataset"
 
 
 def kp_index_columns() -> list[str]:
@@ -58,22 +56,18 @@ def to_relative_image_path(path: str, repo_root: Path) -> str:
     p = Path(path)
     s = p.as_posix()
 
-    anchor_idx = s.find(DATASET_ANCHOR)
-    if anchor_idx >= 0:
-        return s[anchor_idx:]
-
     try:
-        return p.resolve().relative_to(repo_root.resolve()).as_posix()
+        rel = p.resolve().relative_to(repo_root.resolve()).as_posix()
+        return canonical_dataset_image_path(rel)
     except ValueError:
         pass
 
     for part in ("Documents/FACE/", "/FACE/"):
         idx = s.find(part)
         if idx >= 0:
-            tail = s[idx + len(part) :]
-            return tail.lstrip("/")
+            return canonical_dataset_image_path(s[idx + len(part) :].lstrip("/"))
 
-    return s
+    return canonical_dataset_image_path(s)
 
 
 def normalize_dataframe(df: pd.DataFrame, repo_root: Path) -> pd.DataFrame:
@@ -97,7 +91,7 @@ def normalize_dataframe(df: pd.DataFrame, repo_root: Path) -> pd.DataFrame:
     out["image_path"] = [
         to_relative_image_path(str(v), repo_root) for v in out["image_path"]
     ]
-    logger.info("Converted image_path to paths relative to repo root.")
+    logger.info("Converted image_path → dataset/<label>/<file> (short form).")
     return out
 
 

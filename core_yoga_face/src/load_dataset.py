@@ -92,25 +92,42 @@ def default_repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
+def canonical_dataset_image_path(path: str) -> str:
+    """
+    Chuẩn hóa image_path về dạng dataset/<label>/<file>.jpg (bỏ tiền tố YogaSinglePose-PTIT-main/).
+    """
+    s = Path(path).as_posix().lstrip("/")
+    for prefix in ("YogaSinglePose-PTIT-main/dataset/", "YogaSinglePose-PTIT-main\\dataset\\"):
+        if s.startswith(prefix.replace("\\", "/")):
+            return "dataset/" + s[len(prefix) :]
+    idx = s.find("dataset/")
+    if idx >= 0:
+        return s[idx:]
+    return s
+
+
 def resolve_image_path(image_path: str, repo_root: Optional[Path] = None) -> Path:
     """
-    Resolve image_path for display (supports relative paths from repo root).
+    Resolve image_path for display.
+    CSV nên dùng dataset/...; ảnh thật thường nằm YogaSinglePose-PTIT-main/dataset/...
     """
     repo_root = repo_root or default_repo_root()
     raw = Path(image_path)
     if raw.is_file():
         return raw.resolve()
 
-    candidates = [
-        raw,
-        repo_root / raw,
-        Path.cwd() / raw,
-        repo_root / "core_yoga_face" / raw,
-    ]
+    rel = canonical_dataset_image_path(str(image_path))
+    rel_path = Path(rel)
+    candidates: list[Path] = [raw, repo_root / rel_path, Path.cwd() / rel_path, repo_root / "core_yoga_face" / rel_path]
+
+    if rel.startswith("dataset/"):
+        tail = rel[len("dataset/") :]
+        candidates.append(repo_root / "YogaSinglePose-PTIT-main" / "dataset" / tail)
+
     for candidate in candidates:
         if candidate.is_file():
             return candidate.resolve()
-    return (repo_root / raw).resolve()
+    return (repo_root / rel_path).resolve()
 
 
 def load_csv(csv_path: str | Path) -> pd.DataFrame:
